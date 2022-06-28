@@ -1,7 +1,13 @@
 {
   "name": "md-links",
   "version": "0.1.0",
+  "type": "module",
   "engines": {
     "node": ">=14.x"
+  },
+  "devDependencies": {
+    "eslint": "^8.18.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
   }
 }
