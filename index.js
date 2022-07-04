@@ -39,6 +39,15 @@ export const validateFile = (route) => {
         ok: response.statusText,
       };
       return dataLinks;
+    }).catch((error) => {
+      const dataLinks = {
+        text: content[i].text,
+        href: link,
+        file: route,
+        status: error.response.status,
+        ok: error.response.statusText,
+      };
+      return dataLinks;
     });
 
     linkPromises.push(linkPromise);
@@ -51,9 +60,9 @@ export const validateFile = (route) => {
   });
 };
 
-validateFile('./demo.md').then((result) => {
-  console.log(result);
-});
+// validateFile('./demo.md').then((result) => {
+//   console.log(result);
+// });
 
 // const fileRead = readFile('./demo.md');
 // console.log(fileRead);
