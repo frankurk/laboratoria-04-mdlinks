@@ -25,10 +25,12 @@ export const readFile = (route) => {
 
 export const validateFile = (route) => {
   const content = readFile(route);
-  const links = [];
+  const linkPromises = [];
+
   for (let i = 0; i < content.length; i++) {
     const link = content[i].href;
-    axios.get(link).then((response) => {
+
+    const linkPromise = axios.get(link).then((response) => {
       const dataLinks = {
         text: content[i].text,
         href: link,
@@ -36,13 +38,22 @@ export const validateFile = (route) => {
         status: response.status,
         ok: response.statusText,
       };
-      links.push(dataLinks);
-      console.log(links);
+      return dataLinks;
     });
+
+    linkPromises.push(linkPromise);
   }
+
+  return new Promise((resolve) => {
+    Promise.all(linkPromises).then((resolvedPromises) => {
+      resolve(resolvedPromises);
+    });
+  });
 };
 
-console.log(validateFile('./demo.md'));
+validateFile('./demo.md').then((result) => {
+  console.log(result);
+});
 
 // const fileRead = readFile('./demo.md');
 // console.log(fileRead);
