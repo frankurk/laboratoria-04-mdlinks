@@ -1,4 +1,3 @@
-// import { mdLinks } from './mdLinks.js';
 import * as fs from 'fs';
 import { marked } from 'marked';
 import { load } from 'cheerio';
@@ -18,7 +17,7 @@ export const readFile = (route) => {
     links.push({
       text: $(link).text(),
       href: $(link).attr('href'),
-      file: url.fileURLToPath(new URL('.', import.meta.url)),
+      file: route,
     });
   });
   return links;
@@ -35,7 +34,7 @@ export const validateFile = (route) => {
       const dataLinks = {
         text: content[i].text,
         href: link,
-        file: url.fileURLToPath(new URL('.', import.meta.url)),
+        file: route,
         status: response.status,
         ok: response.statusText,
       };
@@ -44,7 +43,7 @@ export const validateFile = (route) => {
       const dataLinks = {
         text: content[i].text,
         href: link,
-        file: url.fileURLToPath(new URL('.', import.meta.url)),
+        file: route,
         status: error.response.status,
         ok: error.response.statusText,
       };
@@ -59,25 +58,6 @@ export const validateFile = (route) => {
     });
   });
 };
-
-// validateFile('./cli.js').then((result) => {
-// console.log(result);
-// });
-
-// const fileRead = readFile('./demo.md');
-// console.log(fileRead);
-
-// export const readDir = (route, dirEl) => {
-//   const content = fs.readdirSync(route, 'utf8');
-//   const dirEl = [];
-//   content.forEach((file) => {
-//     dirEl.push(file);
-//   });
-//   return dirEl;
-// };
-
-// const dir = readDir('/Users/fran/Desktop/Dev/Proyectos/laboratoria-04-mdlinks');
-// console.log(dir);
 
 export const getAllFiles = (route, arr) => {
   const files = fs.readdirSync(route);

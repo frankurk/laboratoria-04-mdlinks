@@ -15,18 +15,12 @@ export const mdLinks = (path, options) => {
       }
     });
     return Promise.all(filesArr);
-  } else {
-    if (options.validate) {
-      const validatedFiles = validateFile(path);
-      return validatedFiles;
-    } else {
-      const validatedFiles = new Promise((resolve) => {
-        resolve(readFile(path));
-      });
-      return validatedFiles;
-    }
-    
   }
+  if (options.validate) {
+    const validatedFiles = validateFile(path);
+    return validatedFiles;
+  }
+  return new Promise((resolve) => {
+    resolve(readFile(path));
+  });
 };
-
-// console.log(mdLinks('./demo.md'));
