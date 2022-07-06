@@ -1,80 +1,32 @@
-// import { mdLinks } from './mdLinks.js';
 import * as fs from 'fs';
-import { marked } from 'marked';
-import { load } from 'cheerio';
-import path from 'node:path';
-import axios from 'axios';
+import { getAllFiles, readFile, validateFile } from './mdLinks.js';
 
-export const readFile = (route) => {
-  if (path.extname(route) !== '.md') throw new Error();
-  const content = fs.readFileSync(route, 'utf8');
-  const data = marked.parse(content);
-  const $ = load(data);
-  const linkTag = $('a');
-
-  const links = [];
-  linkTag.each((index, link) => {
-    links.push({
-      text: $(link).text(),
-      href: $(link).attr('href'),
-      file: route,
+export const mdLinks = (path, options) => {
+  if (fs.statSync(path).isDirectory()) {
+    const filesArr = [];
+    const data = getAllFiles(path);
+    data.forEach((file) => {
+      if (options.validate) {
+        const validatedFiles = validateFile(file);
+        filesArr.push(validatedFiles);
+      } else {
+        const validatedFiles = readFile(file);
+        filesArr.push(validatedFiles);
+      }
     });
-  });
-  return links;
-};
-
-export const validateFile = (route) => {
-  const content = readFile(route);
-  const linkPromises = [];
-
-  for (let i = 0; i < content.length; i++) {
-    const link = content[i].href;
-
-    const linkPromise = axios.get(link).then((response) => {
-      const dataLinks = {
-        text: content[i].text,
-        href: link,
-        file: route,
-        status: response.status,
-        ok: response.statusText,
-      };
-      return dataLinks;
-    }).catch((error) => {
-      const dataLinks = {
-        text: content[i].text,
-        href: link,
-        file: route,
-        status: error.response.status,
-        ok: error.response.statusText,
-      };
-      return dataLinks;
-    });
-
-    linkPromises.push(linkPromise);
+    return Promise.all(filesArr);
+  } else {
+    if (options.validate) {
+      const validatedFiles = validateFile(path);
+      return validatedFiles;
+    } else {
+      const validatedFiles = new Promise((resolve) => {
+        resolve(readFile(path));
+      });
+      return validatedFiles;
+    }
+    
   }
-
-  return new Promise((resolve) => {
-    Promise.all(linkPromises).then((resolvedPromises) => {
-      resolve(resolvedPromises);
-    });
-  });
 };
 
-// validateFile('./demo.md').then((result) => {
-//   console.log(result);
-// });
-
-// const fileRead = readFile('./demo.md');
-// console.log(fileRead);
-
-export const readDir = (route) => {
-  const content = fs.readdirSync(route, 'utf8');
-  const dirEl = [];
-  content.forEach((file) => {
-    dirEl.push(file);
-  });
-  return dirEl;
-};
-
-// const dir = readDir('/Users/fran/Desktop/Dev/Proyectos/laboratoria-04-mdlinks');
-// console.log(dir);
+// console.log(mdLinks('./demo.md'));
