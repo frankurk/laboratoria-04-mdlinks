@@ -25,9 +25,8 @@ export const mdLinks = (path, options) => {
       const validatedFiles = validateFile(path);
       return validatedFiles;
     } else if (options.stats) {
-      return new Promise((resolve) => {
-        resolve(validateStats(path));
-      });
+      const fileStats = validateStats(path);
+      return fileStats;
     } else {
       return new Promise((resolve) => {
         resolve(readFile(path));

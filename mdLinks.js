@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import * as fs from 'fs';
 import { marked } from 'marked';
 import { load } from 'cheerio';
@@ -89,6 +90,7 @@ export const validateStats = (route) => {
       statsObj.Broken += 1;
     }
   });
+
   statsObj.Unique = uniqueLinks.size;
   return statsObj;
 };
