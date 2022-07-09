@@ -76,21 +76,22 @@ export const getAllFiles = (route, arr) => {
   return arr;
 };
 
-export const validateStats = (route) => {
-  const links = readFile(route);
-  const statsObj = {};
+export const validateStats = (route) => new Promise((resolve) => {
+  validateFile(route).then((links) => {
+    const statsObj = {};
 
-  statsObj.Total = links.length;
-  statsObj.Unique = 0;
-  statsObj.Broken = 0;
-  const uniqueLinks = new Set();
-  links.forEach((link) => {
-    uniqueLinks.add(link.href);
-    if (link.ok === 'Not Found') {
-      statsObj.Broken += 1;
-    }
+    statsObj.Total = links.length;
+    statsObj.Unique = 0;
+    statsObj.Broken = 0;
+    const uniqueLinks = new Set();
+    links.forEach((link) => {
+      uniqueLinks.add(link.href);
+      if (link.ok === 'Not Found') {
+        statsObj.Broken += 1;
+      }
+    });
+
+    statsObj.Unique = uniqueLinks.size;
+    resolve(statsObj);
   });
-
-  statsObj.Unique = uniqueLinks.size;
-  return statsObj;
-};
+});
