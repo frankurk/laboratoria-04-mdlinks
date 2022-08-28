@@ -1,7 +1,9 @@
 /* eslint-disable no-else-return */
 /* eslint-disable no-lonely-if */
 import * as fs from 'fs';
-import { getAllFiles, readFile, validateFile, validateStats } from './mdLinks.js';
+import {
+  getAllFiles, readFile, validateFile, validateStats,
+} from './mdLinks.js';
 
 export const mdLinks = (path, options) => {
   if (fs.statSync(path).isDirectory()) {
@@ -14,7 +16,7 @@ export const mdLinks = (path, options) => {
       } else if (options.stats) {
         const links = validateStats(file);
         filesArr.push(links);
-      } if (options.validate === false && options.stats === false) {
+      } else if (options.validate === false && options.stats === false) {
         const validatedFiles = readFile(file);
         filesArr.push(validatedFiles);
       }
